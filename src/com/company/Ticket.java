@@ -5,10 +5,11 @@ import java.util.Iterator;
 
 public class Ticket implements Comparable<Ticket>{
     private double price;
-
+//Allows lists of tickets to be sorted by price
     Ticket(double price){
         this.price = price;
     }
+
 
     double getPrice() {
         return price;

@@ -1,21 +1,25 @@
 package com.company;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
-//class holding the map, generating it and finding nearby events in it
+//class holding the map, generating it and finding nearby events in it, also contains preloaded images of field and concert
 public class Map {
-    JPanel map;
-    Random rand;
-    ArrayList<Venue> eventList;
+    private Random rand;
+    private ArrayList<Venue> eventList;
+    private BufferedImage concert;
+    private BufferedImage field;
 
-
-    Map(){
+    Map() throws IOException {
         rand = new Random();
-        map = genNewMap();
+        concert = ImageIO.read(getClass().getResource("/resources/concert.jpg"));
+        field = ImageIO.read(getClass().getResource("/resources/field.jpg"));
     }
 
     JPanel genNewMap(){
@@ -24,12 +28,14 @@ public class Map {
         //counter for determining the identifier of each event
         int identCount = 1;
         eventList = new ArrayList<Venue>();
+        Venue v;
+        Boolean isEvent;
         for (int i = 10; i>-11; i--){
             for (int j = -10; j<11; j++){
-                //for each space in the grid add a venue at that address
-                //whether there is an event at the venue or not is determined randomly
-                Venue v = new Venue(isEvent(), j, i);
-                if (v.isEvent()){
+                //randomly determines if the venue has an event on and creates is appropriately
+                isEvent = isEvent();
+                if (isEvent){
+                    v = new Venue(j, i, concert);
                     //adds a random number of tickets if the venue has an event
                     v = addTickets(v);
                     //generates identifier for the event
@@ -37,6 +43,9 @@ public class Map {
                     identCount++;
                     v.setIdent(ident);
                     eventList.add(v);
+                }
+                else{
+                    v = new Venue(j, i, field);
                 }
                 newMap.add(v);
             }

@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class Window extends JFrame implements ActionListener {
     //map class for
@@ -13,11 +14,12 @@ public class Window extends JFrame implements ActionListener {
     private JTextField yCoord;
     private JTextArea outputArea;
 
-    Window(){
+    Window() throws IOException {
         //create frame and construct Map class
         setTitle("Viagogo Coding Challenge");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         map = new Map();
+
         //create items inside content pane
         setContentPane(createContentPane());
         pack();
@@ -26,18 +28,22 @@ public class Window extends JFrame implements ActionListener {
     }
 
     private Container createContentPane() {
-        //Create the content pane to contain the map panel above the i/o panel
+        //Create the content pane to contain the map panel to the left of i/o panel
         JPanel pane = new JPanel();
-        pane.setLayout(new BorderLayout());
-        pane.add(createMapPanel(), BorderLayout.NORTH);
-        pane.add(createInputOutput(), BorderLayout.CENTER);
+        //pane.setLayout(new BorderLayout());
+        //pane.add(createMapPanel(), BorderLayout.NORTH);
+        //pane.add(createInputOutput(), BorderLayout.CENTER);
+
+        pane.add(createMapPanel());
+        pane.add(createInputOutput());
         return pane;
     }
 
     private Component createInputOutput() {
-        //set the i/o panel to place components horizontally
+        //set the i/o panel to place components vertically
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+
         //place input section before output section
         panel.add(createInput());
         panel.add(Box.createGlue());
@@ -53,11 +59,11 @@ public class Window extends JFrame implements ActionListener {
         outputArea = new JTextArea(10, 30);
         outputArea.setEditable(false);
         outputArea.append("Please enter your coordinates\n");
+
         //add it as a scroll pane to prevent unnecessary box growth
         JScrollPane scrollPane = new JScrollPane(outputArea);
 
         panel.add(scrollPane,BorderLayout.CENTER);
-        panel.show();
         return panel;
     }
 
@@ -70,7 +76,6 @@ public class Window extends JFrame implements ActionListener {
         panel.add(Box.createRigidArea(new Dimension(0,5)));
         panel.add(createFindButton());
         panel.add(Box.createGlue());
-        panel.show();
         return panel;
     }
 
@@ -95,7 +100,6 @@ public class Window extends JFrame implements ActionListener {
         panel.add(new JLabel(","));
         panel.add(yCoord);
         panel.add(Box.createGlue());
-        panel.show();
         return panel;
     }
 
@@ -104,20 +108,22 @@ public class Window extends JFrame implements ActionListener {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         currMap = map.genNewMap();
-
         panel.add(currMap);
         panel.add(Box.createGlue());
         //create a generate new map button
-        panel.add(createGenMapButton());
+        panel.add(createMapButton());
         return panel;
     }
 
-    private JButton createGenMapButton() {
+    private JPanel createMapButton() {
+        JPanel panel = new JPanel();
         //create a button that fires the gen action when clicked
-        JButton button = new JButton("Generate new map");
-        button.setActionCommand("gen");
-        button.addActionListener(this);
-        return button;
+        JButton genButton = new JButton("Generate new map");
+        genButton.setActionCommand("gen");
+        genButton.addActionListener(this);
+
+        panel.add(genButton);
+        return panel;
     }
 
     @Override
@@ -175,13 +181,17 @@ public class Window extends JFrame implements ActionListener {
         String xString = String.valueOf(x);
         String yString = String.valueOf(y);
         outputArea.append(string1.concat(loc).concat(":\n"));
+
         //Normalise the given coordinates relative to the placement of the icons
         int yNorm = 10-y;
         int xNorm = x+10;
+
         //get the correct venue from the map
         Venue ven = (Venue) currMap.getComponent(yNorm*21 + xNorm);
+
         //find the closest events to this venue
         Pair[] distPairs = map.findClosestEvents(x, y);
+
         //for the closest 5 venues or less if there are not even 5 events
         for(int i = 0;i < distPairs.length && i < 5; i++){
             //output the distances and cheapest prices

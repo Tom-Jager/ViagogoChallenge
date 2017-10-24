@@ -1,8 +1,11 @@
 package com.company;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +16,6 @@ public class Venue extends JLabel {
     private String ident;
     private int xCoord;
     private int yCoord;
-    private boolean isEvent;
     private List<Ticket> tickets;
 
 
@@ -21,9 +23,6 @@ public class Venue extends JLabel {
         this.ident = String.valueOf(id);
     }
 
-    boolean isEvent() {
-        return isEvent;
-    }
 
     int getDist(int x, int y){
         int dist = abs(xCoord - x) + abs(yCoord - y);
@@ -40,22 +39,15 @@ public class Venue extends JLabel {
         return "$".concat(String.valueOf(minPrice));
     }
 //initialises the venue
-    Venue(boolean isEvent, int x, int y){
+    Venue(int x, int y, BufferedImage image){
         ident = "no ident";
         this.xCoord = x;
         this.yCoord = y;
-        this.isEvent = isEvent;
         this.tickets = new ArrayList<>();
         //sets image appropriately
-        if(this.isEvent){
-            this.setIcon(new ImageIcon("bin/concert.jpg"));
-        }
-        else{
-            this.setIcon(new ImageIcon("bin/field.jpg"));
-        }
+        this.setIcon(new ImageIcon(image));
         //adds a border to each element
         this.setBorder( createBorder());
-        this.show();
     }
 
     private Border createBorder() {

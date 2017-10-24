@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ViagogoChallenge:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ViagogoChallenge_jar</output-path>
+    <root id="archive" name="ViagogoChallenge.jar">
+      <element id="module-output" name="ViagogoChallenge" />
+    </root>
+  </artifact>
+</component>
