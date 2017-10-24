@@ -1,0 +1,5 @@
+<root>
+    <item name='java.util.Random int nextInt(int)'>
+        <annotation name='java.lang.Deprecated'/>
+    </item>
+</root>
